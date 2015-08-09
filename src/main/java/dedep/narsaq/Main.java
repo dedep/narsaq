@@ -6,17 +6,33 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
+import java.net.URL;
+
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
+        ClassLoader classLoader = getClass().getClassLoader();
+        if (classLoader == null){
+            throw new RuntimeException("Cannot find classloader for class " + getClass());
+        }
+
+        URL resource = classLoader.getResource("gui.fxml");
+        if (resource == null) {
+            throw new FileNotFoundException("Cannot find FXML file");
+        }
+
+        Parent root = FXMLLoader.load(resource);
+        setupStage(primaryStage, root);
+    }
+
+    private void setupStage(Stage primaryStage, Parent root) {
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root));
         primaryStage.setFullScreen(true);
         primaryStage.show();
     }
-
 
     public static void main(String[] args) {
         launch(args);
