@@ -1,3 +1,5 @@
+package dedep.narsaq.sample;
+
 import edsdk.api.CanonCamera;
 import edsdk.utils.CanonConstants.EdsSaveTo;
 
