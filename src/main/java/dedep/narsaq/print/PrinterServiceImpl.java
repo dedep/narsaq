@@ -1,4 +1,7 @@
-package dedep.narsaq;
+package dedep.narsaq.print;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.awt.image.BufferedImage;
@@ -8,6 +11,8 @@ import java.awt.print.PrinterJob;
 @Singleton
 public class PrinterServiceImpl implements PrinterService {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     public void print(BufferedImage image) {
         Runnable r = () -> {
             PrinterJob printJob = PrinterJob.getPrinterJob();
@@ -15,11 +20,11 @@ public class PrinterServiceImpl implements PrinterService {
 
             try {
                 printJob.print();
-            } catch (PrinterException prt) {
-                prt.printStackTrace(); //todo: log
+            } catch (PrinterException e) {
+                logger.error("Print error", e);
             }
 
-            System.out.println("Printed"); //todo: log
+            logger.info("Printed"); //todo: some id
         };
 
         new Thread(r, "Print thread").start();

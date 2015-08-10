@@ -1,4 +1,4 @@
-package dedep.narsaq;
+package dedep.narsaq.print;
 
 import java.awt.image.BufferedImage;
 
