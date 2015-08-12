@@ -18,8 +18,6 @@ public class Main extends Application {
         URL resource = getFXMLResource();
         Parent root = FXMLLoader.load(resource);
         setupStage(primaryStage, root);
-
-        start();
     }
 
     private URL getFXMLResource() throws FileNotFoundException {
