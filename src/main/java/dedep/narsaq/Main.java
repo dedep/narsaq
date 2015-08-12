@@ -2,52 +2,55 @@ package dedep.narsaq;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import edsdk.api.CanonCamera;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
-import java.net.URL;
 
 public class Main extends Application {
 
+    private static Injector injector;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-        URL resource = getFXMLResource();
-        Parent root = FXMLLoader.load(resource);
+        Parent root = getRoot();
         setupStage(primaryStage, root);
     }
 
-    private URL getFXMLResource() throws FileNotFoundException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        if (classLoader == null){
-            throw new RuntimeException("Cannot find classloader for class " + getClass());
-        }
+    private Parent getRoot() throws FileNotFoundException {
+        Injector injector = getInjector();
+        GuiceLoader guiceLoader = injector.getInstance(GuiceLoader.class);
 
-        URL resource = classLoader.getResource("gui.fxml");
-        if (resource == null) {
-            throw new FileNotFoundException("Cannot find FXML file");
-        }
-
-        return resource;
+        return (Parent) guiceLoader.load("mainWindow.fxml", MainWindowController.class);
     }
 
     private void setupStage(Stage primaryStage, Parent root) {
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root));
         primaryStage.setFullScreen(true);
+
+        Injector injector = getInjector();
+        CanonCamera camera = injector.getInstance(CanonCamera.class);
+        primaryStage.setOnCloseRequest(we -> { //todo: add hook class to handle it
+            camera.closeSession();
+            CanonCamera.close();
+        });
+
         primaryStage.show();
     }
 
-    private void start() {
-        Injector injector = Guice.createInjector(new AppModule());
-        PhotoBoothService photoBoothService = injector.getInstance(PhotoBoothService.class);
-        photoBoothService.executeAction();
-    }
+    private static Injector getInjector() {
+        if (injector == null) {
+            injector = Guice.createInjector(new AppModule());
+        }
 
-    public static void main(String[] args) {
-        launch(args);
+        return injector;
     }
 }
