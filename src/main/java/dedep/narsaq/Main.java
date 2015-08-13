@@ -41,6 +41,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(we -> { //todo: add hook class to handle it
             camera.closeSession();
             CanonCamera.close();
+            System.exit(0);
         });
 
         primaryStage.show();

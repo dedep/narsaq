@@ -3,8 +3,10 @@ package dedep.narsaq;
 import com.google.inject.Inject;
 import edsdk.api.CanonCamera;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
@@ -21,8 +23,14 @@ public class MainWindowController implements Initializable {
     @FXML
     private ImageView imageView;
 
+    @FXML
+    private Button actionBtn;
+
     @Inject
     private CanonCamera camera;
+
+    @Inject
+    private PhotoBoothService photoBoothService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -43,5 +51,10 @@ public class MainWindowController implements Initializable {
                 imageView.setImage(image);
             }
         }
+    }
+
+    @FXML
+    private void onActionBtnClick(ActionEvent actionEvent) {
+        photoBoothService.executeAction();
     }
 }

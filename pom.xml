@@ -57,6 +57,13 @@
             <version>1.7.12</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>1.0.14</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

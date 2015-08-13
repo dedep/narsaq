@@ -20,11 +20,10 @@ public class PrinterServiceImpl implements PrinterService {
 
             try {
                 printJob.print();
+                logger.info("Printed");
             } catch (PrinterException e) {
-                logger.error("Print error", e);
+                throw new PrintException(e);
             }
-
-            logger.info("Printed"); //todo: some id
         };
 
         new Thread(r, "Print thread").start();
