@@ -1,7 +1,7 @@
 package dedep.narsaq.print;
 
-import java.awt.image.BufferedImage;
+import java.nio.file.Path;
 
 public interface PrinterService {
-    void print(BufferedImage image);
+    void print(Path file);
 }

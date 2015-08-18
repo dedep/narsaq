@@ -1,7 +1,7 @@
 package dedep.narsaq.photo;
 
-import java.awt.image.BufferedImage;
+import java.nio.file.Path;
 
 public interface PhotoService {
-    BufferedImage shoot();
+    Path shoot();
 }

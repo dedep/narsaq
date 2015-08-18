@@ -35,7 +35,7 @@ public class MainWindowController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Runnable r = () -> {
-            if (camera.beginLiveView()) {
+            if (camera.beginLiveView()) { //todo: moze to ustawic juz przy starcie?
                 liveViewLoop();
             }
         };
@@ -45,7 +45,7 @@ public class MainWindowController implements Initializable {
 
     private void liveViewLoop() {
         while (true) {
-            final BufferedImage img = camera.downloadLiveView();
+            final BufferedImage img = camera.downloadLiveView(); //todo: do osobnego serwisu
             if (img != null) {
                 Image image = SwingFXUtils.toFXImage(img, null);
                 imageView.setImage(image);

@@ -5,12 +5,11 @@ import edsdk.utils.CanonConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.*;
 import java.util.stream.Stream;
 
@@ -25,12 +24,12 @@ public class PhotoServiceImpl implements PhotoService {
     private static final int MAX_ATTEMPTS = 1;
 
     @Override
-    public BufferedImage shoot() {
+    public Path shoot() {
         logger.info("Shooting image");
         File[] files = shootPhoto();
         return Stream.of(files).map(photo -> {
             try {
-                BufferedImage img = ImageIO.read(photo);
+                Path img = photo.toPath();
                 logger.info("Saved photo as: " + photo.getCanonicalPath());
                 return img;
             } catch (IOException e) {

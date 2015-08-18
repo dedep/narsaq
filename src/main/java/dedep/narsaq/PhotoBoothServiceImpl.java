@@ -8,8 +8,6 @@ import rx.Observable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -25,14 +23,19 @@ public class PhotoBoothServiceImpl implements PhotoBoothService{
 
     private static final int DELAY = 8;
     private static final int PHOTOS = 1;
+    private static final int RETRIES = 2;
 
     @Override
     public void executeAction() {
-        Observable<List<BufferedImage>> observable = Observable.interval(DELAY, TimeUnit.SECONDS)
-                .take(PHOTOS).map(i -> photoService.shoot()).retry(2).toList();
+        Observable<Integer> observable = Observable.interval(DELAY, TimeUnit.SECONDS)
+                .take(PHOTOS).map(i -> photoService.shoot()).retry(RETRIES).toList()
+                .map(photos -> {
+                    printerService.print(photos.get(PHOTOS - 1)); //todo: prepare photo to print
+                    return 1; //todo: obmyslec co tu zwrocic
+                });
 
-        observable.subscribe(photo -> {
-            photo.forEach(printerService::print);
+        observable.subscribe(status -> {
+            logger.info("Photobooth action executed successfully");
         }, error -> {
             logger.error("Failed to execute photobooth action due to: ", error);
         });
