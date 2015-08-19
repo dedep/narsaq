@@ -28,6 +28,7 @@ public class PrinterServiceImpl implements PrinterService {
             Files.copy(image, dest);
             logger.info("File " + image + "copied to " + dest);
         } catch (IOException e) {
+            logger.error("Photo print error", e);
             throw new PrintException(e);
         }
     }

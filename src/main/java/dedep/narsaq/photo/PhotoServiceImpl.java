@@ -36,7 +36,7 @@ public class PhotoServiceImpl implements PhotoService {
                 logger.error("Photo shoot io exception", e);
                 throw new PhotoShootException(e);
             }
-        }).findFirst().orElseThrow(() -> new PhotoShootException("No taken photo."));
+        }).findFirst().orElseThrow(() -> new PhotoShootException("No taken photo"));
     }
 
     private File[] shootPhoto() {
