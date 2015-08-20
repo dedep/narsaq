@@ -1,5 +1,8 @@
 package dedep.narsaq.photo.concat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
 import javax.inject.Singleton;
 import java.awt.image.BufferedImage;
@@ -8,34 +11,40 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Singleton
 public class PhotoConcatenerImpl implements PhotoConcatener{
 
-    public static void main(String[] args) throws IOException {
-        Path img1 = Paths.get(("/home/dedep/Obrazy/charyn-canyon-kazakhstan-wallpaper-3.jpg"));
-        Path img2 = Paths.get(("/home/dedep/Obrazy/Finland-Wallpaper-HD-Free-Download-62.jpg"));
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-        new PhotoConcatenerImpl().concat(Arrays.asList(img1, img2));
+    public static final int PHOTO_COLUMNS = 2;
+
+    private static final String FILE_EXTENSION = "jpg";
+    private static final String FILE_PREFIX = "photobooth";
+
+    public static void main(String[] args) throws IOException {
+        Path img1 = Paths.get(("C:\\Users\\localadmin\\AppData\\Local\\Temp\\IMG_0001.JPG"));
+        Path img2 = Paths.get(("C:\\Users\\localadmin\\AppData\\Local\\Temp\\IMG_0002.JPG"));
+        Path img3 = Paths.get(("C:\\Users\\localadmin\\AppData\\Local\\Temp\\IMG_0003.JPG"));
+        Path img4 = Paths.get(("C:\\Users\\localadmin\\AppData\\Local\\Temp\\IMG_0004.JPG"));
+
+        new PhotoConcatenerImpl().concat(Arrays.asList(img1, img2, img3, img4));
     }
 
     @Override
     public Path concat(List<Path> toConcat) {
-        BufferedImage img = toConcat.stream().map(this::toBufferedImage).collect(new PhotoConcatenerCollector());
+        logger.info("Before image concatening");
+        List<BufferedImage> imgList = toConcat.stream().map(this::toBufferedImage).collect(Collectors.toList());
+        BufferedImage img = concatImages(imgList);
         try {
-            File dest = File.createTempFile("1", "jpg"); //todo: some id
-            ImageIO.write(img, "jpg", dest);
+            File dest = File.createTempFile(FILE_PREFIX, "." + FILE_EXTENSION);
+            ImageIO.write(img, FILE_EXTENSION, dest);
+            logger.info("Concatened photo saved in " + dest.getPath());
             return dest.toPath();
         } catch (IOException e) {
-            throw new RuntimeException(); //todo: handle it
+            throw new RuntimeException("Photo concatenation exception ", e);
         }
     }
 
@@ -43,39 +52,25 @@ public class PhotoConcatenerImpl implements PhotoConcatener{
         try {
             return ImageIO.read(path.toFile());
         } catch (IOException e) {
-            throw new RuntimeException(); //todo: handle it
+            throw new RuntimeException("Image read exception ", e);
         }
     }
 
-    class PhotoConcatenerCollector implements Collector<BufferedImage, BufferedImage, BufferedImage> {
+    private BufferedImage concatImages(List<BufferedImage> toConcat) {
+        Integer height = toConcat.stream().mapToInt(BufferedImage::getHeight).sum();
+        Integer width = toConcat.stream().mapToInt(BufferedImage::getWidth).max().orElse(0) * PHOTO_COLUMNS;
 
-        @Override
-        public Supplier<BufferedImage> supplier() {
-            return () -> new BufferedImage(0, 0, BufferedImage.TYPE_INT_RGB);
+        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        int heightAgg = 0;
+        for (BufferedImage img : toConcat) {
+            int widthAgg = 0;
+            for (int col = 0 ; col < PHOTO_COLUMNS ; col++) {
+                result.createGraphics().drawImage(img, widthAgg, heightAgg, img.getWidth(), img.getHeight(), null);
+                widthAgg += img.getWidth();
+            }
+            heightAgg += img.getHeight();
         }
 
-        @Override
-        public BiConsumer<BufferedImage, BufferedImage> accumulator() {
-            return (acc, elem) ->
-                    acc.createGraphics().drawImage(elem, 0, acc.getHeight(), null);
-        }
-
-        @Override
-        public BinaryOperator<BufferedImage> combiner() {
-            return (left, right) -> {
-                left.createGraphics().drawImage(right, 0, left.getHeight(), null);
-                return left;
-            };
-        }
-
-        @Override
-        public Function<BufferedImage, BufferedImage> finisher() {
-            return Function.identity();
-        }
-
-        @Override
-        public Set<Characteristics> characteristics() {
-            return EnumSet.of(Characteristics.IDENTITY_FINISH);
-        }
+        return result;
     }
 }

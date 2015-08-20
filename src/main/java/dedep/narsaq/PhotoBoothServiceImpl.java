@@ -27,7 +27,7 @@ public class PhotoBoothServiceImpl implements PhotoBoothService{
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final int DELAY = 8;
-    private static final int PHOTOS = 1;
+    private static final int PHOTOS = 4;
     private static final int RETRIES = 2;
 
     @Override
