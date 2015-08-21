@@ -18,6 +18,7 @@ public class AppModule extends AbstractModule {
         bind(CanonCamera.class).toInstance(createCamera());
         bind(PhotoService.class).to(PhotoServiceImpl.class);
         bind(PhotoConcatener.class).to(PhotoConcatenerImpl.class);
+        bind(PropertiesService.class).to(PropertiesServiceImpl.class);
     }
 
     private CanonCamera createCamera() {

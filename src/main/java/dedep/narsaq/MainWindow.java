@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 
-public class Main extends Application {
+public class MainWindow extends Application {
 
     private static Injector injector;
 

@@ -24,16 +24,20 @@ public class PhotoBoothServiceImpl implements PhotoBoothService{
     @Inject
     private PhotoConcatener photoConcatener;
 
+    @Inject
+    private PropertiesService propertiesService;
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final int DELAY = 8;
-    private static final int PHOTOS = 4;
-    private static final int RETRIES = 2;
+    private static final String DELAY = "photos.delay";
+    private static final String PHOTOS = "photos.count";
+    private static final String RETRIES = "photos.max.retries";
 
     @Override
     public void executeAction() {
-        Observable<Path> observable = Observable.interval(DELAY, TimeUnit.SECONDS)
-                .take(PHOTOS).map(i -> photoService.shoot()).retry(RETRIES).toList()
+        Observable<Path> observable = Observable.interval(propertiesService.getInt(DELAY), TimeUnit.SECONDS)
+                .take(propertiesService.getInt(PHOTOS))
+                .map(i -> photoService.shoot()).retry(propertiesService.getInt(RETRIES)).toList()
                 .map(photos -> {
                     Path toPrint = photoConcatener.concat(photos);
                     printerService.print(toPrint);
