@@ -1,0 +1,33 @@
+<assembly>
+    <id>dist</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <baseDirectory>/</baseDirectory>
+
+    <files>
+        <file>
+            <source>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+    </files>
+
+    <fileSets>
+        <fileSet>
+            <directory>EDSDK</directory>
+            <outputDirectory>EDSDK</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>EDSDK_64</directory>
+            <outputDirectory>EDSDK_64</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
