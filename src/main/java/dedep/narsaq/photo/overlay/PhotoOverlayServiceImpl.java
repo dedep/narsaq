@@ -20,9 +20,9 @@ public class PhotoOverlayServiceImpl implements PhotoOverlayService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String OVERLAY_PATH = "overlay.url";
-    private String FILE_PREFIX = "photo.file.prefix";
-    private String FILE_EXTENSION = "photo.file.extension";
+    private static final String OVERLAY_PATH = "overlay.url";
+    private static final String FILE_PREFIX = "photo.file.prefix";
+    private static final String FILE_EXTENSION = "photo.file.extension";
 
     @Override
     public Path overlayPhoto(Path toOverlay) {
