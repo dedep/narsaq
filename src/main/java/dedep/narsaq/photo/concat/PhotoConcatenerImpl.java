@@ -24,7 +24,7 @@ public class PhotoConcatenerImpl implements PhotoConcatener{
 
     public static final String PHOTO_COLUMNS = "photo.columns";
 
-    private static final String FILE_EXTENSION = "photo.file.extension";
+    private static final String FILE_EXTENSION = "photo.input.file.extension";
     private static final String FILE_PREFIX = "photo.file.prefix";
 
     @Override

@@ -22,7 +22,7 @@ public class PhotoOverlayServiceImpl implements PhotoOverlayService {
 
     private static final String OVERLAY_PATH = "overlay.url";
     private static final String FILE_PREFIX = "photo.file.prefix";
-    private static final String FILE_EXTENSION = "photo.file.extension";
+    private static final String OUT_FILE_EXTENSION = "photo.output.file.extension";
 
     @Override
     public Path overlayPhoto(Path toOverlay) {
@@ -39,8 +39,8 @@ public class PhotoOverlayServiceImpl implements PhotoOverlayService {
 
     private Path savePhoto(BufferedImage img) {
         try {
-            File dest = File.createTempFile(propertiesService.get(FILE_PREFIX), ".png");
-            ImageIO.write(img, "png", dest);
+            File dest = File.createTempFile(propertiesService.get(FILE_PREFIX), "." + propertiesService.get(OUT_FILE_EXTENSION));
+            ImageIO.write(img, propertiesService.get(OUT_FILE_EXTENSION), dest);
             logger.info("Overlay photo saved in " + dest.getPath());
             return dest.toPath();
         } catch (IOException e) {
