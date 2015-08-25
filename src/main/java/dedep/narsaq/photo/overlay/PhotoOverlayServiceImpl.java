@@ -31,21 +31,16 @@ public class PhotoOverlayServiceImpl implements PhotoOverlayService {
         Path overlayPath = Paths.get(propertiesService.get(OVERLAY_PATH));
         BufferedImage overlay = toBufferedImage(overlayPath);
 
-        int w = Math.max(image.getWidth(), overlay.getWidth());
-        int h = Math.max(image.getHeight(), overlay.getHeight());
-        BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics g = combined.getGraphics();
-        g.drawImage(image, 0, 0, null);
+        Graphics g = image.getGraphics();
         g.drawImage(overlay, 0, 0, null);
 
-        return savePhoto(combined);
+        return savePhoto(image);
     }
 
     private Path savePhoto(BufferedImage img) {
         try {
-            File dest = File.createTempFile(propertiesService.get(FILE_PREFIX), "." + propertiesService.get(FILE_EXTENSION));
-            ImageIO.write(img, propertiesService.get(FILE_EXTENSION), dest);
+            File dest = File.createTempFile(propertiesService.get(FILE_PREFIX), ".png");
+            ImageIO.write(img, "png", dest);
             logger.info("Overlay photo saved in " + dest.getPath());
             return dest.toPath();
         } catch (IOException e) {
