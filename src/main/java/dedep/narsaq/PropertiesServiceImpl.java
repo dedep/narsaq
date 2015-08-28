@@ -22,6 +22,11 @@ public class PropertiesServiceImpl implements PropertiesService {
         return Integer.valueOf(get(key));
     }
 
+    @Override
+    public Double getDouble(String key) {
+        return Double.valueOf(get(key));
+    }
+
     private Object getObj(String key) {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
             properties.load(in);
