@@ -23,9 +23,10 @@ public class PhotoConcatenerImpl implements PhotoConcatener{
     private PropertiesService propertiesService;
 
     public static final String PHOTO_COLUMNS = "photo.columns";
+    public static final String PHOTO_RATIO = "photo.ratio";
 
-    private static final String FILE_EXTENSION = "photo.input.file.extension";
-    private static final String FILE_PREFIX = "photo.file.prefix";
+    public static final String FILE_EXTENSION = "photo.input.file.extension";
+    public static final String FILE_PREFIX = "photo.file.prefix";
 
     @Override
     public Path concat(List<Path> toConcat) {
@@ -56,8 +57,9 @@ public class PhotoConcatenerImpl implements PhotoConcatener{
         Integer photoColumns = propertiesService.getInt(PHOTO_COLUMNS);
         Integer height = toConcat.stream().mapToInt(BufferedImage::getHeight).sum();
         Integer width = toConcat.stream().mapToInt(BufferedImage::getWidth).max().orElse(0) * photoColumns;
+        Size size = calculateSize(width, height);
 
-        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage result = new BufferedImage(size.getWidth(), size.getHeight(), BufferedImage.TYPE_INT_RGB);
         int heightAgg = 0;
         for (BufferedImage img : toConcat) {
             int widthAgg = 0;
@@ -69,5 +71,33 @@ public class PhotoConcatenerImpl implements PhotoConcatener{
         }
 
         return result;
+    }
+
+    static class Size {
+        private int width, height;
+
+        public Size(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+    }
+
+    Size calculateSize(Integer proposedWidth, Integer proposedHeight) {
+        Double ratio = propertiesService.getDouble(PHOTO_RATIO);
+        Double proposedRatio = ((double) proposedWidth) / proposedHeight;
+
+        if (proposedRatio > ratio) {
+            return new Size(proposedWidth, (int) (proposedWidth / ratio));
+        }
+
+        return new Size((int) (proposedHeight * ratio), proposedHeight);
     }
 }
