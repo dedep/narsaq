@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 
 public class MainWindow extends Application {
 
+    public static final String STYLES_FILE = "style.css";
+
     private static Injector injector;
 
     public static void main(String[] args) {
@@ -33,7 +35,9 @@ public class MainWindow extends Application {
 
     private void setupStage(Stage primaryStage, Parent root) {
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource(STYLES_FILE).toExternalForm());
+        primaryStage.setScene(scene);
         primaryStage.setFullScreen(true);
 
         Injector injector = getInjector();

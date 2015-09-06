@@ -3,11 +3,16 @@ package dedep.narsaq;
 import com.google.inject.Injector;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import javafx.fxml.FXMLLoader;
 import javafx.util.Callback;
 import javax.inject.Inject;
 
 public class GuiceLoader implements Callback<Class<?>, Object> {
+
+    public static final String BUNDLE_NAME = "Bundle";
 
     private final Injector injector;
 
@@ -20,6 +25,7 @@ public class GuiceLoader implements Callback<Class<?>, Object> {
         try {
             URL url = controller.getClassLoader().getResource(fxmlName);
             FXMLLoader loader = new FXMLLoader();
+            loader.setResources(ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault()));
             loader.setControllerFactory(this);
             return loader.load(url.openStream());
         } catch (IOException ex) {

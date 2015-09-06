@@ -6,7 +6,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
@@ -22,9 +21,6 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private ImageView imageView;
-
-    @FXML
-    private Button actionBtn;
 
     @Inject
     private CanonCamera camera;

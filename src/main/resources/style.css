@@ -1,0 +1,24 @@
+#pane {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-font-size: 56px;
+    -fx-font-family: 'Gill sans mt';
+    -fx-font-weight: 700;
+    -fx-max-height: 800;
+    -fx-max-width: 0;
+}
+
+#pane .label {
+    -fx-text-fill: grey;
+    -fx-padding: 0 0 70px 0;
+}
+
+#pane .button {
+    -fx-background-color: grey;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+    -fx-text-fill: white;
+}
+
+#pane .button:hover {
+    -fx-background-color: dodgerblue;
+}
