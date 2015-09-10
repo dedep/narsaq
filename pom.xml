@@ -138,10 +138,11 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <file>src/main/resources/narsaq.bat</file>
+                    <ignoreMissingFile>false</ignoreMissingFile>
+                    <file>${project.build.directory}/classes/narsaq.bat</file>
                     <replacements>
                         <replacement>
-                            <token>{narsaq.version}</token>
+                            <token>%NARSAQ_VERSION</token>
                             <value>${project.version}</value>
                         </replacement>
                     </replacements>

@@ -13,7 +13,7 @@
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
-            <source>src/main/resources/narsaq.bat</source>
+            <source>${project.build.directory}/classes/narsaq.bat</source>
             <outputDirectory>/</outputDirectory>
         </file>
     </files>
