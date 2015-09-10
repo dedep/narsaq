@@ -16,7 +16,6 @@ public class AppModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(PrinterService.class).to(PrinterServiceImpl.class);
-        bind(PhotoBoothService.class).to(PhotoBoothServiceImpl.class);
         bind(CanonCamera.class).toInstance(createCamera());
         bind(PhotoService.class).to(PhotoServiceImpl.class);
         bind(PhotoConcatener.class).to(PhotoConcatenerImpl.class);

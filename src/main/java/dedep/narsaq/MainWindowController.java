@@ -1,6 +1,10 @@
 package dedep.narsaq;
 
 import com.google.inject.Inject;
+import dedep.narsaq.photo.PhotoService;
+import dedep.narsaq.photo.concat.PhotoConcatener;
+import dedep.narsaq.photo.overlay.PhotoOverlayService;
+import dedep.narsaq.print.PrinterService;
 import edsdk.api.CanonCamera;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -11,14 +15,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rx.Observable;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 public class MainWindowController implements Initializable {
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @FXML
     private ImageView imageView;
@@ -30,7 +36,25 @@ public class MainWindowController implements Initializable {
     private CanonCamera camera;
 
     @Inject
-    private PhotoBoothService photoBoothService;
+    private PrinterService printerService;
+
+    @Inject
+    private PhotoService photoService;
+
+    @Inject
+    private PhotoConcatener photoConcatener;
+
+    @Inject
+    private PropertiesService propertiesService;
+
+    @Inject
+    private PhotoOverlayService photoOverlayService;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static final String DELAY = "photos.delay";
+    private static final String PHOTOS = "photos.count";
+    private static final String RETRIES = "photos.max.retries";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,6 +80,26 @@ public class MainWindowController implements Initializable {
     @FXML
     private void onActionBtnClick(ActionEvent actionEvent) {
         grid.setVisible(false);
-        photoBoothService.executeAction();
+        executeAction();
+    }
+
+    private void executeAction() {
+        Observable<Path> observable = Observable.interval(propertiesService.getInt(DELAY), TimeUnit.SECONDS)
+                .take(propertiesService.getInt(PHOTOS))
+                .map(i -> photoService.shoot()).retry(propertiesService.getInt(RETRIES)).toList()
+                .map(this::preparePhoto);
+
+        observable.subscribe(status -> {
+            logger.info("Photo booth action executed successfully");
+        }, error -> {
+            logger.error("Failed to execute photo booth action due to: ", error);
+        });
+    }
+
+    private Path preparePhoto(List<Path> inputPhotos) {
+        Path concatened = photoConcatener.concat(inputPhotos);
+        Path overlayed = photoOverlayService.overlayPhoto(concatened);
+        printerService.print(overlayed);
+        return overlayed;
     }
 }
