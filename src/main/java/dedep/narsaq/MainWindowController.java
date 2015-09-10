@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,9 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private ImageView imageView;
+
+    @FXML
+    private GridPane grid;
 
     @Inject
     private CanonCamera camera;
@@ -51,6 +55,7 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void onActionBtnClick(ActionEvent actionEvent) {
+        grid.setVisible(false);
         photoBoothService.executeAction();
     }
 }
