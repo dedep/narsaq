@@ -1,35 +1,46 @@
 package dedep.narsaq.print;
 
-import dedep.narsaq.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
+import javax.imageio.ImageIO;
 import javax.inject.Singleton;
+import java.awt.image.BufferedImage;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Singleton
 public class PrinterServiceImpl implements PrinterService {
 
+    public static void main(String[] args) {
+        new PrinterServiceImpl().print(Paths.get("/home/dedep/Obrazy/The_Pale_Blue_Dot.jpg"));
+    }
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public static final String HOT_FOLDER_URL = "hot.folder.url";
-
-    @Inject
-    private PropertiesService propertiesService;
-
     public void print(Path image) {
-        try {
-            String hotFolderUrl = propertiesService.get(HOT_FOLDER_URL);
-            Path dest = Paths.get(hotFolderUrl).resolve(image.getFileName());
-            Files.copy(image, dest);
-            logger.info("File " + image + "copied to " + dest);
-        } catch (IOException e) {
-            logger.error("Photo print error", e);
-            throw new PrintException(e);
-        }
+        Runnable r = () -> {
+            try {
+                BufferedImage img = ImageIO.read(image.toFile());
+
+                PrinterJob printJob = PrinterJob.getPrinterJob();
+                printJob.setPrintable(new ImagePrintable(printJob, img));
+
+                try {
+                    printJob.print();
+                } catch (PrinterException e) {
+                    logger.error("Print error", e);
+                }
+
+                logger.info("Printed"); //todo: some id
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+
+        new Thread(r, "Print thread").start();
     }
 }
