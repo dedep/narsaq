@@ -6,29 +6,25 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 import javax.inject.Singleton;
 import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Pageable;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Singleton
 public class PrinterServiceImpl implements PrinterService {
-
-    public static void main(String[] args) {
-        new PrinterServiceImpl().print(Paths.get("/home/dedep/Obrazy/The_Pale_Blue_Dot.jpg"));
-    }
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     public void print(Path image) {
         Runnable r = () -> {
             try {
-                BufferedImage img = ImageIO.read(image.toFile());
-
                 PrinterJob printJob = PrinterJob.getPrinterJob();
-                printJob.setPrintable(new ImagePrintable(printJob, img));
-
+                printJob.setPageable(createPageable(image, printJob));
                 try {
                     printJob.print();
                 } catch (PrinterException e) {
@@ -42,5 +38,17 @@ public class PrinterServiceImpl implements PrinterService {
         };
 
         new Thread(r, "Print thread").start();
+    }
+
+    private Pageable createPageable(Path image, PrinterJob printJob) throws IOException {
+        BufferedImage img = ImageIO.read(image.toFile());
+        PageFormat pf = printJob.defaultPage();
+        Paper p = pf.getPaper();
+        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+        pf.setPaper(p);
+
+        Printable printable = new ImagePrintable(img);
+
+        return new OpenBook(pf, printable);
     }
 }

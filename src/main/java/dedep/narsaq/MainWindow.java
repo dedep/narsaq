@@ -9,10 +9,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class MainWindow extends Application {
 
     public static final String STYLES_FILE = "style.css";
+    public static final String WINDOW_TITLE = "window.title";
 
     private static Injector injector;
 
@@ -34,7 +37,7 @@ public class MainWindow extends Application {
     }
 
     private void setupStage(Stage primaryStage, Parent root) {
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle(getWindowTitle());
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getClassLoader().getResource(STYLES_FILE).toExternalForm());
         primaryStage.setScene(scene);
@@ -57,5 +60,10 @@ public class MainWindow extends Application {
         }
 
         return injector;
+    }
+
+    private String getWindowTitle() {
+        ResourceBundle bundle = ResourceBundle.getBundle("Bundle", Locale.getDefault());
+        return bundle.getString(WINDOW_TITLE);
     }
 }

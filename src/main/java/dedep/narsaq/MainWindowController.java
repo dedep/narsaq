@@ -90,8 +90,11 @@ public class MainWindowController implements Initializable {
                 .map(this::preparePhoto);
 
         observable.subscribe(status -> {
+            grid.setVisible(true);
             logger.info("Photo booth action executed successfully");
         }, error -> {
+            grid.setVisible(true);
+            //todo: some alert
             logger.error("Failed to execute photo booth action due to: ", error);
         });
     }
