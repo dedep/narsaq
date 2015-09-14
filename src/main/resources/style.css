@@ -19,6 +19,6 @@
     -fx-text-fill: white;
 }
 
-#pane .button:hover {
+#pane .button:pressed {
     -fx-background-color: dodgerblue;
 }

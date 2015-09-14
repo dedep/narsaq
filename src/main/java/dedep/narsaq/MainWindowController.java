@@ -26,40 +26,36 @@ import java.util.concurrent.TimeUnit;
 
 public class MainWindowController implements Initializable {
 
-    @FXML
-    private ImageView imageView;
-
-    @FXML
-    private GridPane grid;
-
-    @Inject
-    private CanonCamera camera;
-
-    @Inject
-    private PrinterService printerService;
-
-    @Inject
-    private PhotoService photoService;
-
-    @Inject
-    private PhotoConcatener photoConcatener;
-
-    @Inject
-    private PropertiesService propertiesService;
-
-    @Inject
-    private PhotoOverlayService photoOverlayService;
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
     private static final String DELAY = "photos.delay";
     private static final String PHOTOS = "photos.count";
     private static final String RETRIES = "photos.max.retries";
+    @FXML
+    private ImageView imageView;
+    @FXML
+    private GridPane grid;
+    @Inject
+    private CanonCamera camera;
+    @Inject
+    private PrinterService printerService;
+    @Inject
+    private PhotoService photoService;
+    @Inject
+    private PhotoConcatener photoConcatener;
+    @Inject
+    private PropertiesService propertiesService;
+    @Inject
+    private PhotoOverlayService photoOverlayService;
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    private Boolean isRunning = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+    }
+
+    private void liveStream() {
         Runnable r = () -> {
-            if (camera.beginLiveView()) { //todo: moze to ustawic juz przy starcie?
+            camera.openSession();
+            if (camera.beginLiveView()) {
                 liveViewLoop();
             }
         };
@@ -68,19 +64,41 @@ public class MainWindowController implements Initializable {
     }
 
     private void liveViewLoop() {
-        while (true) {
-            final BufferedImage img = camera.downloadLiveView(); //todo: do osobnego serwisu
+        while (isRunning) {
+            final BufferedImage img = camera.downloadLiveView();
             if (img != null) {
-                Image image = SwingFXUtils.toFXImage(img, null);
-                imageView.setImage(image);
+                setBackground(img);
             }
         }
+
+        setBackground(null);
+        camera.closeSession();
     }
 
     @FXML
     private void onActionBtnClick(ActionEvent actionEvent) {
+        startPhotoBoothSession();
+    }
+
+    private void startPhotoBoothSession() {
         grid.setVisible(false);
+        isRunning = true;
+        liveStream();
         executeAction();
+    }
+
+    private void stopPhotoBoothAction() {
+        grid.setVisible(true);
+        isRunning = false;
+    }
+
+    private void setBackground(BufferedImage img) {
+        Image image = null;
+        if (img != null) {
+            image = SwingFXUtils.toFXImage(img, null);
+        }
+
+        imageView.setImage(image);
     }
 
     private void executeAction() {
@@ -90,10 +108,10 @@ public class MainWindowController implements Initializable {
                 .map(this::preparePhoto);
 
         observable.subscribe(status -> {
-            grid.setVisible(true);
+            stopPhotoBoothAction();
             logger.info("Photo booth action executed successfully");
         }, error -> {
-            grid.setVisible(true);
+            stopPhotoBoothAction();
             //todo: some alert
             logger.error("Failed to execute photo booth action due to: ", error);
         });
