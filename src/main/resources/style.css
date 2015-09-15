@@ -1,9 +1,18 @@
+#content {
+    -fx-font-family: 'Gill sans mt';
+}
+
+#content #counterLabel {
+    -fx-font-size: 220px;
+    -fx-text-fill: grey;
+
+}
+
 #pane {
+    -fx-font-size: 56px;
+    -fx-font-weight: 700;
     -fx-background-color: white;
     -fx-padding: 15;
-    -fx-font-size: 56px;
-    -fx-font-family: 'Gill sans mt';
-    -fx-font-weight: 700;
     -fx-max-height: 800;
     -fx-max-width: 0;
 }

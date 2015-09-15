@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.geometry.Insets?>
 
-<StackPane fx:controller="dedep.narsaq.MainWindowController" xmlns:fx="http://javafx.com/fxml">
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="dedep.narsaq.MainWindowController" fx:id="content">
     <ImageView fx:id="imageView" />
 
     <GridPane xmlns:fx="http://javafx.com/fxml" fx:id="grid" alignment="CENTER">
@@ -35,4 +35,6 @@
             </image>
         </ImageView>
     </GridPane>
+
+    <Label fx:id="counterLabel" />
 </StackPane>

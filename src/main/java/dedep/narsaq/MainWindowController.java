@@ -6,10 +6,12 @@ import dedep.narsaq.photo.concat.PhotoConcatener;
 import dedep.narsaq.photo.overlay.PhotoOverlayService;
 import dedep.narsaq.print.PrinterService;
 import edsdk.api.CanonCamera;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -33,6 +35,8 @@ public class MainWindowController implements Initializable {
     private ImageView imageView;
     @FXML
     private GridPane grid;
+    @FXML
+    private Label counterLabel;
     @Inject
     private CanonCamera camera;
     @Inject
@@ -102,9 +106,11 @@ public class MainWindowController implements Initializable {
     }
 
     private void executeAction() {
-        Observable<Path> observable = Observable.interval(propertiesService.getInt(DELAY), TimeUnit.SECONDS)
+        Observable<Path> observable = createPhotoTrigger()
                 .take(propertiesService.getInt(PHOTOS))
-                .map(i -> photoService.shoot()).retry(propertiesService.getInt(RETRIES)).toList()
+                .map(i -> photoService.shoot())
+                .retry(propertiesService.getInt(RETRIES))
+                .toList()
                 .map(this::preparePhoto);
 
         observable.subscribe(status -> {
@@ -115,6 +121,18 @@ public class MainWindowController implements Initializable {
             //todo: some alert
             logger.error("Failed to execute photo booth action due to: ", error);
         });
+    }
+
+    private Observable<Long> createPhotoTrigger() {
+        return Observable.interval(1, TimeUnit.SECONDS)
+                .map((x) -> {
+                    long index = (x % propertiesService.getInt(DELAY)) + 1;
+                    Platform.runLater(() ->
+                            counterLabel.setText(String.valueOf(propertiesService.getInt(DELAY) - index)));
+
+                    return index;
+                })
+                .filter((i) -> i % propertiesService.getInt(DELAY) == 0);
     }
 
     private Path preparePhoto(List<Path> inputPhotos) {
