@@ -142,6 +142,8 @@ public class MainWindowController implements Initializable {
     }
 
     private Path preparePhoto(List<Path> inputPhotos) {
+        Platform.runLater(() -> counterLabel.setText(""));
+
         Path concatened = photoConcatener.concat(inputPhotos);
         Path overlayed = photoOverlayService.overlayPhoto(concatened);
         Path scaled = photoScale.scalePhoto(overlayed);
