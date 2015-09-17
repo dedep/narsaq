@@ -1,6 +1,6 @@
 package dedep.narsaq.photo.concat;
 
-import dedep.narsaq.PropertiesService;
+import dedep.narsaq.properties.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

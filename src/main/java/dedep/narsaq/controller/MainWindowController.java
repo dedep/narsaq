@@ -1,4 +1,4 @@
-package dedep.narsaq;
+package dedep.narsaq.controller;
 
 import com.google.inject.Inject;
 import dedep.narsaq.photo.PhotoService;
@@ -6,6 +6,7 @@ import dedep.narsaq.photo.concat.PhotoConcatener;
 import dedep.narsaq.photo.overlay.PhotoOverlayService;
 import dedep.narsaq.photo.scale.PhotoScale;
 import dedep.narsaq.print.PrinterService;
+import dedep.narsaq.properties.PropertiesService;
 import edsdk.api.CanonCamera;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;

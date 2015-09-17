@@ -1,6 +1,6 @@
 package dedep.narsaq.photo.overlay;
 
-import dedep.narsaq.PropertiesService;
+import dedep.narsaq.properties.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

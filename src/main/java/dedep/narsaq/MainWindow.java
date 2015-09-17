@@ -2,6 +2,9 @@ package dedep.narsaq;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import dedep.narsaq.controller.MainWindowController;
+import dedep.narsaq.module.AppModule;
+import dedep.narsaq.util.GuiceLoader;
 import edsdk.api.CanonCamera;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -45,7 +48,7 @@ public class MainWindow extends Application {
 
         Injector injector = getInjector();
         CanonCamera camera = injector.getInstance(CanonCamera.class);
-        primaryStage.setOnCloseRequest(we -> { //todo: add hook class to handle it
+        primaryStage.setOnCloseRequest(we -> {
             camera.closeSession();
             CanonCamera.close();
             System.exit(0);

@@ -1,7 +1,7 @@
 package dedep.narsaq.photo.scale;
 
 import com.google.inject.Singleton;
-import dedep.narsaq.PropertiesService;
+import dedep.narsaq.properties.PropertiesService;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

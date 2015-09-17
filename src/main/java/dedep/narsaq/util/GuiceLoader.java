@@ -1,4 +1,4 @@
-package dedep.narsaq;
+package dedep.narsaq.util;
 
 import com.google.inject.Injector;
 import java.io.IOException;

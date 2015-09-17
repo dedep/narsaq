@@ -1,6 +1,6 @@
 package dedep.narsaq.photo.concat;
 
-import dedep.narsaq.PropertiesService;
+import dedep.narsaq.properties.PropertiesService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package dedep.narsaq;
+package dedep.narsaq.properties;
 
 public interface PropertiesService {
     String get(String key);
