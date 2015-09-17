@@ -28,6 +28,10 @@ public class PhotoConcatenerImpl implements PhotoConcatener{
     public static final String FILE_EXTENSION = "photo.input.file.extension";
     public static final String FILE_PREFIX = "photo.file.prefix";
 
+    public static final String X_OFFSET_RIGHT = "photo.output.file.offset.x.right";
+    public static final String X_OFFSET_LEFT = "photo.output.file.offset.x.left";
+    public static final String Y_OFFSET = "photo.output.file.offset.y";
+
     @Override
     public Path concat(List<Path> toConcat) {
         logger.info("Before image concatening");
@@ -54,16 +58,19 @@ public class PhotoConcatenerImpl implements PhotoConcatener{
     }
 
     private BufferedImage concatImages(List<BufferedImage> toConcat) {
+        Integer xOffsetRight = propertiesService.getInt(X_OFFSET_RIGHT);
+        Integer xOffsetLeft = propertiesService.getInt(X_OFFSET_LEFT);
+        Integer yOffset = propertiesService.getInt(Y_OFFSET);
         Integer photoColumns = propertiesService.getInt(PHOTO_COLUMNS);
-        Integer height = toConcat.stream().mapToInt(BufferedImage::getHeight).sum();
-        Integer width = toConcat.stream().mapToInt(BufferedImage::getWidth).max().orElse(0) * photoColumns;
+        Integer height = (toConcat.stream().mapToInt(BufferedImage::getHeight).sum()) + (yOffset) * 2;
+        Integer width = (toConcat.stream().mapToInt(BufferedImage::getWidth).max().orElse(0) * photoColumns) + xOffsetRight + xOffsetLeft;
         Size size = calculateSize(width, height);
 
         BufferedImage result = new BufferedImage(size.getWidth(), size.getHeight(), BufferedImage.TYPE_INT_RGB);
-        int heightAgg = 0;
+        int heightAgg = yOffset;
         for (BufferedImage img : toConcat) {
-            int widthAgg = 0;
-            for (int col = 0 ; col < photoColumns ; col++) {
+            int widthAgg = xOffsetLeft;
+            for (int col = 0; col < photoColumns; col++) {
                 result.createGraphics().drawImage(img, widthAgg, heightAgg, img.getWidth(), img.getHeight(), null);
                 widthAgg += img.getWidth();
             }

@@ -7,6 +7,8 @@ import dedep.narsaq.photo.concat.PhotoConcatener;
 import dedep.narsaq.photo.concat.PhotoConcatenerImpl;
 import dedep.narsaq.photo.overlay.PhotoOverlayService;
 import dedep.narsaq.photo.overlay.PhotoOverlayServiceImpl;
+import dedep.narsaq.photo.scale.PhotoScale;
+import dedep.narsaq.photo.scale.PhotoScaleImpl;
 import dedep.narsaq.print.PrinterService;
 import dedep.narsaq.print.PrinterServiceImpl;
 import edsdk.api.CanonCamera;
@@ -21,6 +23,7 @@ public class AppModule extends AbstractModule {
         bind(PhotoConcatener.class).to(PhotoConcatenerImpl.class);
         bind(PhotoOverlayService.class).to(PhotoOverlayServiceImpl.class);
         bind(PropertiesService.class).to(PropertiesServiceImpl.class);
+        bind(PhotoScale.class).to(PhotoScaleImpl.class);
     }
 
     private CanonCamera createCamera() {

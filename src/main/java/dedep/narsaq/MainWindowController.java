@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import dedep.narsaq.photo.PhotoService;
 import dedep.narsaq.photo.concat.PhotoConcatener;
 import dedep.narsaq.photo.overlay.PhotoOverlayService;
+import dedep.narsaq.photo.scale.PhotoScale;
 import dedep.narsaq.print.PrinterService;
 import edsdk.api.CanonCamera;
 import javafx.application.Platform;
@@ -31,12 +32,14 @@ public class MainWindowController implements Initializable {
     private static final String DELAY = "photos.delay";
     private static final String PHOTOS = "photos.count";
     private static final String RETRIES = "photos.max.retries";
+
     @FXML
     private ImageView imageView;
     @FXML
     private GridPane grid;
     @FXML
     private Label counterLabel;
+
     @Inject
     private CanonCamera camera;
     @Inject
@@ -49,6 +52,9 @@ public class MainWindowController implements Initializable {
     private PropertiesService propertiesService;
     @Inject
     private PhotoOverlayService photoOverlayService;
+    @Inject
+    private PhotoScale photoScale;
+
     private Logger logger = LoggerFactory.getLogger(getClass());
     private Boolean isRunning = false;
 
@@ -138,7 +144,9 @@ public class MainWindowController implements Initializable {
     private Path preparePhoto(List<Path> inputPhotos) {
         Path concatened = photoConcatener.concat(inputPhotos);
         Path overlayed = photoOverlayService.overlayPhoto(concatened);
-        printerService.print(overlayed);
-        return overlayed;
+        Path scaled = photoScale.scalePhoto(overlayed);
+
+        printerService.print(scaled);
+        return scaled;
     }
 }

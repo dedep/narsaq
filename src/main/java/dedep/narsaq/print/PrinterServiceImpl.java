@@ -31,7 +31,7 @@ public class PrinterServiceImpl implements PrinterService {
                     logger.error("Print error", e);
                 }
 
-                logger.info("Printed"); //todo: some id
+                logger.info("Printed");
             } catch (IOException e) {
                 e.printStackTrace();
             }
