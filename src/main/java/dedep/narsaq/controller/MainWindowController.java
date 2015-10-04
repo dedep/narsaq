@@ -146,10 +146,10 @@ public class MainWindowController implements Initializable {
         Platform.runLater(() -> counterLabel.setText(""));
 
         Path concatened = photoConcatener.concat(inputPhotos);
-        Path overlayed = photoOverlayService.overlayPhoto(concatened);
-        Path scaled = photoScale.scalePhoto(overlayed);
+        Path scaled = photoScale.scalePhoto(concatened);
+        Path overlayed = photoOverlayService.overlayPhoto(scaled);
 
-        printerService.print(scaled);
-        return scaled;
+        printerService.print(overlayed);
+        return overlayed;
     }
 }

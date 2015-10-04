@@ -28,6 +28,7 @@ public class PhotoScaleImpl implements PhotoScale {
 
     @Override
     public Path scalePhoto(Path input) {
+        logger.info("Before image scaling.");
         BufferedImage img = toBufferedImage(input);
         int width = propertiesService.getInt(PHOTO_OUTPUT_FILE_WIDTH);
         int height = propertiesService.getInt(PHOTO_OUTPUT_FILE_HEIGHT);
