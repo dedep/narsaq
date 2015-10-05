@@ -9,7 +9,7 @@
 
     <files>
         <file>
-            <source>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</source>
+            <source>target/${project.artifactId}-${project.version}.jar</source>
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
@@ -22,16 +22,20 @@
         <fileSet>
             <directory>EDSDK</directory>
             <outputDirectory>EDSDK</outputDirectory>
-            <includes>
-                <include>*</include>
-            </includes>
         </fileSet>
         <fileSet>
             <directory>EDSDK_64</directory>
             <outputDirectory>EDSDK_64</outputDirectory>
-            <includes>
-                <include>*</include>
-            </includes>
         </fileSet>
     </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <useStrictFiltering>true</useStrictFiltering>
+            <useProjectArtifact>false</useProjectArtifact>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+
 </assembly>
