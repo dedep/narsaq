@@ -6,7 +6,7 @@
 
     <groupId>dedep</groupId>
     <artifactId>narsaq</artifactId>
-    <version>1.1</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
