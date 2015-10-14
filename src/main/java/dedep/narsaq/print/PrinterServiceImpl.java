@@ -20,8 +20,8 @@ public class PrinterServiceImpl implements PrinterService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void print(Path image) {
-        Runnable r = () -> {
+    public Path print(Path image) {
+        Runnable r = () -> { // todo: sprawdzic czy ten async jest potrzebny?
             try {
                 PrinterJob printJob = PrinterJob.getPrinterJob();
                 printJob.setPageable(createPageable(image, printJob));
@@ -33,11 +33,12 @@ public class PrinterServiceImpl implements PrinterService {
 
                 logger.info("Printed");
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); //todo: ?
             }
         };
 
         new Thread(r, "Print thread").start();
+        return image;
     }
 
     private Pageable createPageable(Path image, PrinterJob printJob) throws IOException {

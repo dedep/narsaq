@@ -5,6 +5,7 @@ import dedep.narsaq.photo.PhotoService;
 import dedep.narsaq.photo.concat.PhotoConcatener;
 import dedep.narsaq.photo.overlay.PhotoOverlayService;
 import dedep.narsaq.photo.scale.PhotoScale;
+import dedep.narsaq.photo.storage.PhotoStorageService;
 import dedep.narsaq.print.PrinterService;
 import dedep.narsaq.properties.PropertiesService;
 import edsdk.api.CanonCamera;
@@ -55,6 +56,8 @@ public class MainWindowController implements Initializable {
     private PhotoOverlayService photoOverlayService;
     @Inject
     private PhotoScale photoScale;
+    @Inject
+    private PhotoStorageService photoStorageService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private Boolean isRunning = false;
@@ -118,7 +121,9 @@ public class MainWindowController implements Initializable {
                 .map(i -> photoService.shoot())
                 .retry(propertiesService.getInt(RETRIES))
                 .toList()
-                .map(this::preparePhoto);
+                .map(this::preparePhoto)
+                .map(printerService::print)
+                .map(photoStorageService::storeFile);
 
         observable.subscribe(status -> {
             stopPhotoBoothAction();
@@ -145,11 +150,9 @@ public class MainWindowController implements Initializable {
     private Path preparePhoto(List<Path> inputPhotos) {
         Platform.runLater(() -> counterLabel.setText(""));
 
-        Path concatened = photoConcatener.concat(inputPhotos);
-        Path scaled = photoScale.scalePhoto(concatened);
-        Path overlayed = photoOverlayService.overlayPhoto(scaled);
-
-        printerService.print(overlayed);
-        return overlayed;
+        Path photo = photoConcatener.concat(inputPhotos);
+        photo = photoScale.scalePhoto(photo);
+        photo = photoOverlayService.overlayPhoto(photo);
+        return photo;
     }
 }

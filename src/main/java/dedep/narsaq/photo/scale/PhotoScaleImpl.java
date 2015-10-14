@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+//todo: rename to service
 @Singleton
 public class PhotoScaleImpl implements PhotoScale {
 
