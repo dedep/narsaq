@@ -1,6 +1,5 @@
 package dedep.narsaq.photo;
 
-import edsdk.api.CanonCamera;
 import edsdk.utils.CanonConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import java.util.stream.Stream;
 public class PhotoServiceImpl implements PhotoService {
 
     @Inject
-    private CanonCamera camera;
+    private Camera camera;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -41,7 +40,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     private File[] shootPhoto() {
         Future<File[]> futureFiles = Executors.newSingleThreadExecutor().submit(() ->
-                camera.shoot(CanonConstants.EdsSaveTo.kEdsSaveTo_Host, MAX_ATTEMPTS));
+                camera.getCanonCamera().shoot(CanonConstants.EdsSaveTo.kEdsSaveTo_Host, MAX_ATTEMPTS));
 
         try {
             return futureFiles.get(10, TimeUnit.SECONDS);

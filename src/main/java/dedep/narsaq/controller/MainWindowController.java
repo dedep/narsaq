@@ -1,6 +1,7 @@
 package dedep.narsaq.controller;
 
 import com.google.inject.Inject;
+import dedep.narsaq.photo.Camera;
 import dedep.narsaq.photo.PhotoService;
 import dedep.narsaq.photo.concat.PhotoConcatener;
 import dedep.narsaq.photo.overlay.PhotoOverlayService;
@@ -8,7 +9,6 @@ import dedep.narsaq.photo.scale.PhotoScale;
 import dedep.narsaq.photo.storage.PhotoStorageService;
 import dedep.narsaq.print.PrinterService;
 import dedep.narsaq.properties.PropertiesService;
-import edsdk.api.CanonCamera;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +44,7 @@ public class MainWindowController implements Initializable {
     private Label counterLabel;
 
     @Inject
-    private CanonCamera camera;
+    private Camera camera;
     @Inject
     private PrinterService printerService;
     @Inject
@@ -60,6 +61,7 @@ public class MainWindowController implements Initializable {
     private PhotoStorageService photoStorageService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private Optional<Path> lastPhoto = Optional.empty();
     private Boolean isRunning = false;
 
     @Override
@@ -68,8 +70,8 @@ public class MainWindowController implements Initializable {
 
     private void liveStream() {
         Runnable r = () -> {
-            camera.openSession();
-            if (camera.beginLiveView()) {
+            camera.getCanonCamera().openSession();
+            if (camera.getCanonCamera().beginLiveView()) {
                 liveViewLoop();
             }
         };
@@ -79,19 +81,23 @@ public class MainWindowController implements Initializable {
 
     private void liveViewLoop() {
         while (isRunning) {
-            final BufferedImage img = camera.downloadLiveView();
+            final BufferedImage img = camera.getCanonCamera().downloadLiveView();
             if (img != null) {
                 setBackground(img);
             }
         }
 
         setBackground(null);
-        camera.closeSession();
+        camera.getCanonCamera().closeSession();
     }
 
     @FXML
     private void onActionBtnClick(ActionEvent actionEvent) {
         startPhotoBoothSession();
+    }
+
+    private void reprintLastPhoto() {
+        lastPhoto.ifPresent(printerService::print);
     }
 
     private void startPhotoBoothSession() {
@@ -154,6 +160,8 @@ public class MainWindowController implements Initializable {
         photo = photoStorageService.storeFile(photo);
         photo = photoScale.scalePhoto(photo);
         photo = photoOverlayService.overlayPhoto(photo);
+        lastPhoto = Optional.of(photo);
+
         return photo;
     }
 }
