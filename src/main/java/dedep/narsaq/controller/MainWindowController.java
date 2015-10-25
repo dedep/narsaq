@@ -151,6 +151,7 @@ public class MainWindowController implements Initializable {
         Platform.runLater(() -> counterLabel.setText(""));
 
         Path photo = photoConcatener.concat(inputPhotos);
+        photo = photoStorageService.storeFile(photo);
         photo = photoScale.scalePhoto(photo);
         photo = photoOverlayService.overlayPhoto(photo);
         return photo;
