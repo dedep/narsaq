@@ -8,7 +8,18 @@
 <?import javafx.geometry.Insets?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="dedep.narsaq.controller.MainWindowController" fx:id="content">
+
     <ImageView fx:id="imageView" />
+
+    <GridPane xmlns:fx="http://javafx.com/fxml" fx:id="menu" alignment="TOP_LEFT">
+        <Button fx:id="reprintBtn" onAction="#reprintLastPhoto">
+            <graphic>
+                <ImageView>
+                    <Image url="@img/printer.png" requestedWidth="40" requestedHeight="40"/>
+                </ImageView>
+            </graphic>
+        </Button>
+    </GridPane>
 
     <GridPane xmlns:fx="http://javafx.com/fxml" fx:id="grid" alignment="CENTER">
         <BorderPane xmlns:fx="http://javafx.com/fxml" fx:id="pane" GridPane.rowIndex="0" GridPane.columnIndex="0">

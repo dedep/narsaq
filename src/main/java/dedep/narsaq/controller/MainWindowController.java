@@ -66,6 +66,7 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        grid.setPickOnBounds(false);
     }
 
     private void liveStream() {
@@ -96,7 +97,8 @@ public class MainWindowController implements Initializable {
         startPhotoBoothSession();
     }
 
-    private void reprintLastPhoto() {
+    @FXML
+    private void reprintLastPhoto(ActionEvent actionEvent) {
         lastPhoto.ifPresent(printerService::print);
     }
 
