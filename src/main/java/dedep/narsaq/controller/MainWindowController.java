@@ -35,6 +35,7 @@ public class MainWindowController implements Initializable {
     private static final String DELAY = "photos.delay";
     private static final String PHOTOS = "photos.count";
     private static final String RETRIES = "photos.max.retries";
+    private static final String APP_BACKGROUND_IMAGE = "app.background.image";
 
     @FXML
     private ImageView imageView;
@@ -67,6 +68,7 @@ public class MainWindowController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         grid.setPickOnBounds(false);
+        setDefaultBackground();
     }
 
     private void liveStream() {
@@ -88,7 +90,7 @@ public class MainWindowController implements Initializable {
             }
         }
 
-        setBackground(null);
+        setDefaultBackground();
         camera.getCanonCamera().closeSession();
     }
 
@@ -121,6 +123,14 @@ public class MainWindowController implements Initializable {
         }
 
         imageView.setImage(image);
+    }
+
+    private void setDefaultBackground() {
+        if (propertiesService.get(APP_BACKGROUND_IMAGE) != null) {
+            imageView.setImage(new Image(propertiesService.get(APP_BACKGROUND_IMAGE)));
+        } else {
+            setBackground(null);
+        }
     }
 
     private void executeAction() {

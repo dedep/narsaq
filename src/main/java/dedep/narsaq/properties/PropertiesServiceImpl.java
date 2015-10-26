@@ -1,7 +1,5 @@
 package dedep.narsaq.properties;
 
-import dedep.narsaq.properties.PropertiesService;
-
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
