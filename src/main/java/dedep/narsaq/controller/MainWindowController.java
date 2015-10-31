@@ -157,8 +157,10 @@ public class MainWindowController implements Initializable {
         return Observable.interval(1, TimeUnit.SECONDS)
                 .map((x) -> {
                     long index = (x % propertiesService.getInt(DELAY)) + 1;
-                    Platform.runLater(() ->
-                            counterLabel.setText(String.valueOf(propertiesService.getInt(DELAY) - index)));
+                    Platform.runLater(() -> {
+                        String time = String.valueOf(propertiesService.getInt(DELAY) - index);
+                        counterLabel.setText(time);
+                    });
 
                     return index;
                 })
@@ -166,7 +168,7 @@ public class MainWindowController implements Initializable {
     }
 
     private Path preparePhoto(List<Path> inputPhotos) {
-        Platform.runLater(() -> counterLabel.setText(""));
+        Platform.runLater(() -> counterLabel.setText("")); // todo: set "" instead of 0
 
         Path photo = photoConcatener.concat(inputPhotos);
         photo = photoStorageService.storeFile(photo);

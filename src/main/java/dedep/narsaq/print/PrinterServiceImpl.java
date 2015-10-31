@@ -21,7 +21,7 @@ public class PrinterServiceImpl implements PrinterService {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     public Path print(Path image) {
-        Runnable r = () -> { // todo: sprawdzic czy ten async jest potrzebny?
+        Runnable r = () -> { // todo: is that required?
             try {
                 PrinterJob printJob = PrinterJob.getPrinterJob();
                 printJob.setPageable(createPageable(image, printJob));
@@ -29,11 +29,12 @@ public class PrinterServiceImpl implements PrinterService {
                     printJob.print();
                 } catch (PrinterException e) {
                     logger.error("Print error", e);
+                    throw new PrintException(e);
                 }
-
-                logger.info("Printed");
+                logger.info("Printing...");
             } catch (IOException e) {
-                e.printStackTrace(); //todo: ?
+                logger.error("Print IO error", e);
+                throw new PrintException(e);
             }
         };
 
