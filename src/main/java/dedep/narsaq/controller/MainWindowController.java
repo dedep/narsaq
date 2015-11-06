@@ -170,8 +170,7 @@ public class MainWindowController implements Initializable {
     }
 
     private Path storeCameraPhoto(Path photo) {
-        Path renamed = photo.getParent().resolve(UUID.randomUUID().toString() + ".jpg");
-        return photoStorageService.storeFile(renamed);
+        return photoStorageService.storeFile(photo, UUID.randomUUID().toString() + ".jpg");
     }
 
     private Path preparePhoto(List<Path> inputPhotos) {

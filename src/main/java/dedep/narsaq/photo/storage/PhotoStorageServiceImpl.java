@@ -24,9 +24,14 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
     @Override
     public Path storeFile(Path file) { //todo: w razie czego mozna w nowym watku
+        return storeFile(file, file.getFileName().toString());
+    }
+
+    @Override
+    public Path storeFile(Path file, String destName) {
         String outputDir = propertiesService.get(OUTPUT_FILE_DIR_KEY);
         Path destDir = Paths.get(outputDir).resolve(getDestinationDirectoryName());
-        Path dest = destDir.resolve(file.getFileName());
+        Path dest = destDir.resolve(destName);
         logger.info("Copying file {} -> {}", file, dest);
 
         try {
