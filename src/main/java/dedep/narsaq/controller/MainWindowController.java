@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class MainWindowController implements Initializable {
@@ -138,6 +139,7 @@ public class MainWindowController implements Initializable {
                 .take(propertiesService.getInt(PHOTOS))
                 .map(i -> photoService.shoot())
                 .retry(propertiesService.getInt(RETRIES))
+                .map(this::storeCameraPhoto)
                 .toList()
                 .map(this::preparePhoto)
                 .map(printerService::print)
@@ -167,11 +169,15 @@ public class MainWindowController implements Initializable {
                 .filter((i) -> i % propertiesService.getInt(DELAY) == 0);
     }
 
+    private Path storeCameraPhoto(Path photo) {
+        Path renamed = photo.getParent().resolve(UUID.randomUUID().toString() + ".jpg");
+        return photoStorageService.storeFile(renamed);
+    }
+
     private Path preparePhoto(List<Path> inputPhotos) {
         Platform.runLater(() -> counterLabel.setText("")); // todo: set "" instead of 0
 
         Path photo = photoConcatener.concat(inputPhotos);
-        photo = photoStorageService.storeFile(photo);
         photo = photoScale.scalePhoto(photo);
         photo = photoOverlayService.overlayPhoto(photo);
         lastPhoto = Optional.of(photo);
